@@ -2,9 +2,9 @@ use std::collections::HashMap;
 use std::convert::{TryFrom, TryInto};
 use std::str::FromStr;
 
-use cid::{Cid, Version, DAG_PROTOBUF, RAW};
 use multibase::Base;
-use multihash::{Multihash, MultihashDigest, RawMultihash, SHA2_256};
+use tiny_cid::{Cid, Version, DAG_PROTOBUF, RAW};
+use tiny_multihash::{Multihash, MultihashDigest, RawMultihash, SHA2_256};
 
 fn sha2_256(input: &[u8]) -> RawMultihash {
     Multihash::new(SHA2_256, input).unwrap().to_raw().unwrap()

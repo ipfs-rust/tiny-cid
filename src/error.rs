@@ -54,8 +54,8 @@ impl From<multibase::Error> for Error {
     }
 }
 
-impl From<multihash::Error> for Error {
-    fn from(_: multihash::Error) -> Error {
+impl From<tiny_multihash::Error> for Error {
+    fn from(_: tiny_multihash::Error) -> Error {
         Error::ParsingError
     }
 }

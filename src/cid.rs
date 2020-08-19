@@ -2,7 +2,7 @@ use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
 use core::convert::TryFrom;
-use multihash::RawMultihash;
+use tiny_multihash::RawMultihash;
 
 /// Representation of a CID.
 ///
@@ -135,9 +135,9 @@ impl Cid {
     /// # Example
     ///
     /// ```
-    /// use cid::{RAW, Cid};
+    /// use tiny_cid::{RAW, Cid};
     /// use multibase::Base;
-    /// use multihash::{SHA2_256, Multihash, MultihashDigest};
+    /// use tiny_multihash::{SHA2_256, Multihash, MultihashDigest};
     ///
     /// let mh = Multihash::new(SHA2_256, b"foo").unwrap();
     /// let cid = Cid::new_v1(RAW, mh.to_raw().unwrap());

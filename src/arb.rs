@@ -1,9 +1,9 @@
 use std::convert::TryFrom;
 
-use multihash::{Multihash, MultihashDigest, SHA2_256};
 use quickcheck::{Arbitrary, Gen};
 use rand::seq::SliceRandom;
 use rand::Rng;
+use tiny_multihash::{Multihash, MultihashDigest, SHA2_256};
 
 use crate::codec::*;
 use crate::{Cid, Version};
