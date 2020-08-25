@@ -8,6 +8,8 @@ use tiny_multihash::RawMultihash;
 ///
 /// Usually you would use `Cid` instead, unless you have a custom Multihash code table
 #[derive(PartialEq, Eq, Clone, Debug)]
+#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Decode))]
+#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Encode))]
 pub struct Cid {
     /// The version of CID.
     version: Version,

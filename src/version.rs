@@ -3,6 +3,8 @@ use core::convert::TryFrom;
 
 /// The version of the CID.
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
+#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Decode))]
+#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Encode))]
 pub enum Version {
     /// CID version 0.
     V0,
