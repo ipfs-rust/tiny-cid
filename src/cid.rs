@@ -1,12 +1,12 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use tiny_multihash::RawMultihash;
+use tiny_multihash::{RawMultihash, SHA2_256};
 
 /// Representation of a CID.
 ///
 /// Usually you would use `Cid` instead, unless you have a custom Multihash code table
-#[derive(PartialEq, Eq, Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Decode))]
 #[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Encode))]
 pub struct Cid {
@@ -21,7 +21,7 @@ pub struct Cid {
 impl Cid {
     /// Create a new CIDv0.
     pub fn new_v0(hash: RawMultihash) -> Result<Self> {
-        if hash.code() != 0x12 && hash.size() != 0x20 {
+        if hash.code() != SHA2_256 && hash.size() != 0x20 {
             return Err(Error::InvalidCidV0Multihash);
         }
         Ok(Self {
@@ -157,6 +157,16 @@ impl Cid {
                 }
             }
             Version::V1 => Ok(multibase::encode(base, self.to_bytes())),
+        }
+    }
+}
+
+impl Default for Cid {
+    fn default() -> Self {
+        Self {
+            version: Version::V1,
+            codec: 0,
+            hash: RawMultihash::wrap(0, &[]).unwrap(),
         }
     }
 }
