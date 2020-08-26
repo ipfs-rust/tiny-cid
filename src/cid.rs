@@ -273,3 +273,19 @@ impl From<Cid> for String {
         cid.to_string()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[cfg(feature = "scale-codec")]
+    fn test_cid_scale_codec() {
+        use parity_scale_codec::{Decode, Encode};
+
+        let cid = Cid::default();
+        let bytes = cid.encode();
+        let cid2 = Cid::decode(&mut &bytes[..]).unwrap();
+        assert_eq!(cid, cid2);
+    }
+}
