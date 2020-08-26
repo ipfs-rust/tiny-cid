@@ -1,7 +1,6 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use core::convert::TryFrom;
 use tiny_multihash::RawMultihash;
 
 /// Representation of a CID.
@@ -73,6 +72,7 @@ impl Cid {
     /// Reads the bytes from a byte stream.
     #[cfg(feature = "std")]
     pub fn read_bytes<R: std::io::Read>(mut r: R) -> Result<Self> {
+        use core::convert::TryFrom;
         use unsigned_varint::io::read_u64;
         let version = read_u64(&mut r)?;
         let codec = read_u64(&mut r)?;
@@ -185,12 +185,13 @@ impl core::str::FromStr for Cid {
     type Err = Error;
 
     fn from_str(cid_str: &str) -> Result<Self> {
+        use core::convert::TryFrom;
         Self::try_from(cid_str)
     }
 }
 
 #[cfg(feature = "std")]
-impl TryFrom<String> for Cid {
+impl core::convert::TryFrom<String> for Cid {
     type Error = Error;
 
     fn try_from(cid_str: String) -> Result<Self> {
@@ -199,7 +200,7 @@ impl TryFrom<String> for Cid {
 }
 
 #[cfg(feature = "std")]
-impl TryFrom<&str> for Cid {
+impl core::convert::TryFrom<&str> for Cid {
     type Error = Error;
 
     fn try_from(cid_str: &str) -> Result<Self> {
@@ -226,7 +227,7 @@ impl TryFrom<&str> for Cid {
 }
 
 #[cfg(feature = "std")]
-impl TryFrom<Vec<u8>> for Cid {
+impl core::convert::TryFrom<Vec<u8>> for Cid {
     type Error = Error;
 
     fn try_from(bytes: Vec<u8>) -> Result<Self> {
@@ -235,7 +236,7 @@ impl TryFrom<Vec<u8>> for Cid {
 }
 
 #[cfg(feature = "std")]
-impl TryFrom<&[u8]> for Cid {
+impl core::convert::TryFrom<&[u8]> for Cid {
     type Error = Error;
 
     fn try_from(mut bytes: &[u8]) -> Result<Self> {
