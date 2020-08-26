@@ -1,7 +1,7 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use tiny_multihash::{RawMultihash, SHA2_256};
+use tiny_multihash::RawMultihash;
 
 /// Representation of a CID.
 ///
@@ -21,7 +21,7 @@ pub struct Cid {
 impl Cid {
     /// Create a new CIDv0.
     pub fn new_v0(hash: RawMultihash) -> Result<Self> {
-        if hash.code() != SHA2_256 && hash.size() != 0x20 {
+        if hash.code() != 0x12 && hash.size() != 0x20 {
             return Err(Error::InvalidCidV0Multihash);
         }
         Ok(Self {
