@@ -48,6 +48,7 @@ impl core::fmt::Display for Error {
     }
 }
 
+#[cfg(feature = "std")]
 impl From<multibase::Error> for Error {
     fn from(_: multibase::Error) -> Error {
         Error::ParsingError
