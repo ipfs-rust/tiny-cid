@@ -7,8 +7,10 @@ use tiny_multihash::RawMultihash;
 ///
 /// Usually you would use `Cid` instead, unless you have a custom Multihash code table
 #[derive(Clone, Debug, PartialEq, Eq)]
-#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Decode))]
-#[cfg_attr(feature = "parity-scale-codec", derive(parity_scale_codec::Encode))]
+#[cfg_attr(feature = "scale-codec", derive(parity_scale_codec::Decode))]
+#[cfg_attr(feature = "scale-codec", derive(parity_scale_codec::Encode))]
+#[cfg_attr(feature = "serde-codec", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde-codec", derive(serde::Serialize))]
 pub struct Cid {
     /// The version of CID.
     version: Version,
@@ -166,7 +168,7 @@ impl Default for Cid {
         Self {
             version: Version::V1,
             codec: 0,
-            hash: RawMultihash::wrap(0, &[]).unwrap(),
+            hash: RawMultihash::default(),
         }
     }
 }
@@ -276,11 +278,10 @@ impl From<Cid> for String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     #[cfg(feature = "scale-codec")]
     fn test_cid_scale_codec() {
+        use super::Cid;
         use parity_scale_codec::{Decode, Encode};
 
         let cid = Cid::default();
