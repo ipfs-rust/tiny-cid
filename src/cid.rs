@@ -1,8 +1,8 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use tiny_multihash::RawMultihash;
 use std::borrow::Cow;
+use tiny_multihash::RawMultihash;
 
 /// Representation of a CID.
 ///
