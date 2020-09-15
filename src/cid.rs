@@ -2,6 +2,7 @@ use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
 use tiny_multihash::RawMultihash;
+use std::borrow::Cow;
 
 /// Representation of a CID.
 ///
@@ -273,6 +274,20 @@ impl From<Cid> for Vec<u8> {
 impl From<Cid> for String {
     fn from(cid: Cid) -> Self {
         cid.to_string()
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> From<Cid> for Cow<'a, Cid> {
+    fn from(from: Cid) -> Self {
+        Cow::Owned(from)
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> From<&'a Cid> for Cow<'a, Cid> {
+    fn from(from: &'a Cid) -> Self {
+        Cow::Borrowed(from)
     }
 }
 
