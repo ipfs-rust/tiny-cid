@@ -7,7 +7,7 @@ use tiny_multihash::RawMultihash;
 /// Representation of a CID.
 ///
 /// Usually you would use `Cid` instead, unless you have a custom Multihash code table
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 #[cfg_attr(feature = "scale-codec", derive(parity_scale_codec::Decode))]
 #[cfg_attr(feature = "scale-codec", derive(parity_scale_codec::Encode))]
 #[cfg_attr(feature = "serde-codec", derive(serde::Deserialize))]
