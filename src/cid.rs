@@ -1,7 +1,6 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use std::borrow::Cow;
 use tiny_multihash::RawMultihash;
 
 /// Representation of a CID.
@@ -278,16 +277,16 @@ impl From<Cid> for String {
 }
 
 #[cfg(feature = "std")]
-impl<'a> From<Cid> for Cow<'a, Cid> {
+impl<'a> From<Cid> for std::borrow::Cow<'a, Cid> {
     fn from(from: Cid) -> Self {
-        Cow::Owned(from)
+        std::borrow::Cow::Owned(from)
     }
 }
 
 #[cfg(feature = "std")]
-impl<'a> From<&'a Cid> for Cow<'a, Cid> {
+impl<'a> From<&'a Cid> for std::borrow::Cow<'a, Cid> {
     fn from(from: &'a Cid) -> Self {
-        Cow::Borrowed(from)
+        std::borrow::Cow::Borrowed(from)
     }
 }
 
