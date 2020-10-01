@@ -3,7 +3,7 @@ use std::convert::TryFrom;
 use quickcheck::{Arbitrary, Gen};
 use rand::seq::SliceRandom;
 use rand::Rng;
-use tiny_multihash::{Multihash, MultihashDigest, SHA2_256};
+use tiny_multihash::{Code, Multihash, MultihashCode, U64};
 
 use crate::codec::*;
 use crate::{Cid, Version};
@@ -43,22 +43,17 @@ impl Arbitrary for Cid {
         let version: Version = Arbitrary::arbitrary(g);
         if version == Version::V0 {
             let data: Vec<u8> = Arbitrary::arbitrary(g);
-            let hash = Multihash::new(SHA2_256, &data).unwrap().to_raw().unwrap();
+            let hash = Code::Sha2_256.digest(&data);
             Cid::new_v0(hash).expect("sha2_256 is a valid hash for cid v0")
         } else {
-            loop {
-                // chose the most frequently used codecs more often
-                let codec = if g.gen_bool(0.7) {
-                    *POPULAR.choose(g).unwrap()
-                } else {
-                    *CODECS.choose(g).unwrap()
-                };
-                let hash: Multihash = Arbitrary::arbitrary(g);
-                if hash.size() > 32 {
-                    continue;
-                }
-                return Cid::new_v1(codec, hash.to_raw().unwrap());
-            }
+            // chose the most frequently used codecs more often
+            let codec = if g.gen_bool(0.7) {
+                *POPULAR.choose(g).unwrap()
+            } else {
+                *CODECS.choose(g).unwrap()
+            };
+            let hash: Multihash<U64> = Arbitrary::arbitrary(g);
+            Cid::new_v1(codec, hash)
         }
     }
 }

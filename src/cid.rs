@@ -1,7 +1,7 @@
 use crate::codec::DAG_PROTOBUF;
 use crate::error::{Error, Result};
 use crate::version::Version;
-use tiny_multihash::RawMultihash;
+use tiny_multihash::{Multihash, U64};
 
 /// Representation of a CID.
 ///
@@ -17,12 +17,12 @@ pub struct Cid {
     /// The codec of CID.
     codec: u64,
     /// The multihash of CID.
-    hash: RawMultihash,
+    hash: Multihash<U64>,
 }
 
 impl Cid {
     /// Create a new CIDv0.
-    pub fn new_v0(hash: RawMultihash) -> Result<Self> {
+    pub fn new_v0(hash: Multihash<U64>) -> Result<Self> {
         if hash.code() != 0x12 && hash.size() != 0x20 {
             return Err(Error::InvalidCidV0Multihash);
         }
@@ -35,7 +35,7 @@ impl Cid {
     }
 
     /// Create a new CIDv1.
-    pub fn new_v1(codec: u64, hash: RawMultihash) -> Self {
+    pub fn new_v1(codec: u64, hash: Multihash<U64>) -> Self {
         Self {
             version: Version::V1,
             codec,
@@ -44,7 +44,7 @@ impl Cid {
     }
 
     /// Create a new CID.
-    pub fn new(version: Version, codec: u64, hash: RawMultihash) -> Result<Self> {
+    pub fn new(version: Version, codec: u64, hash: Multihash<U64>) -> Result<Self> {
         match version {
             Version::V0 => {
                 if codec != DAG_PROTOBUF {
@@ -67,7 +67,7 @@ impl Cid {
     }
 
     /// Returns the cid multihash.
-    pub fn hash(&self) -> &RawMultihash {
+    pub fn hash(&self) -> &Multihash<U64> {
         &self.hash
     }
 
@@ -81,11 +81,11 @@ impl Cid {
         if [version, codec] == [0x12, 0x20] {
             let mut digest = [0u8; 32];
             r.read_exact(&mut digest)?;
-            let mh = RawMultihash::wrap(version, &digest).unwrap();
+            let mh = Multihash::wrap(version, &digest).unwrap();
             Self::new_v0(mh)
         } else {
             let version = Version::try_from(version)?;
-            let mh = RawMultihash::read(r)?;
+            let mh = Multihash::read(r)?;
             Self::new(version, codec, mh)
         }
     }
@@ -141,10 +141,10 @@ impl Cid {
     /// ```
     /// use tiny_cid::{RAW, Cid};
     /// use multibase::Base;
-    /// use tiny_multihash::{SHA2_256, Multihash, MultihashDigest};
+    /// use tiny_multihash::{Code, MultihashCode};
     ///
-    /// let mh = Multihash::new(SHA2_256, b"foo").unwrap();
-    /// let cid = Cid::new_v1(RAW, mh.to_raw().unwrap());
+    /// let mh = Code::Sha2_256.digest(b"foo");
+    /// let cid = Cid::new_v1(RAW, mh);
     /// let encoded = cid.to_string_of_base(Base::Base64).unwrap();
     /// assert_eq!(encoded, "mAVUSICwmtGto/8aP+ZtFPB0wQTQTQi1wZIO/oPmKXohiZueu");
     /// ```
@@ -168,7 +168,7 @@ impl Default for Cid {
         Self {
             version: Version::V1,
             codec: 0,
-            hash: RawMultihash::default(),
+            hash: Multihash::default(),
         }
     }
 }
@@ -258,7 +258,7 @@ impl core::convert::TryFrom<&[u8]> for Cid {
 
 impl From<&Cid> for Cid {
     fn from(cid: &Cid) -> Self {
-        cid.clone()
+        *cid
     }
 }
 
